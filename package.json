@@ -1,0 +1,23 @@
+{
+  "name": "cypress-e2e-saucedemo",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Cypress end-to-end tests for the SauceDemo web shop",
+  "license": "MIT",
+  "author": "Md. Jahidul Islam Rihan",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/jahidulislamrihan26/cypress-e2e-saucedemo.git"
+  },
+  "homepage": "https://github.com/jahidulislamrihan26/cypress-e2e-saucedemo#readme",
+  "engines": {
+    "node": ">=20"
+  },
+  "scripts": {
+    "test": "cypress run",
+    "open": "cypress open"
+  },
+  "devDependencies": {
+    "cypress": "^13.17.0"
+  }
+}

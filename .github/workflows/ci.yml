@@ -1,0 +1,40 @@
+name: CI
+
+on:
+  push:
+  pull_request:
+  workflow_dispatch:
+  schedule:
+    - cron: '0 4 * * *' # nightly: the public site can change
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  cypress:
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v7
+      - uses: actions/setup-node@v7
+        with:
+          node-version: 22
+          cache: npm
+          cache-dependency-path: package-lock.json
+      - run: npm ci
+      - name: Dependency audit (fails on critical or worse)
+        run: npm audit --audit-level=critical
+      - run: npx cypress install
+      - name: Cypress end-to-end tests
+        run: npx cypress run
+      - uses: actions/upload-artifact@v7
+        if: always()
+        with:
+          name: cypress-results
+          path: |
+            cypress/results
+            cypress/screenshots
+          if-no-files-found: ignore
