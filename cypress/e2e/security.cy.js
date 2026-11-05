@@ -18,9 +18,10 @@ describe('Access control', () => {
   });
 
   it('[BUG-013, known defect] a forged session-username cookie is accepted as a login', () => {
-    // Correct behaviour: the server rejects a cookie it never issued. Today it does not: any value works.
+    // Correct behaviour: a cookie the server never issued is rejected. Today a cookie holding a valid user name is
+    // enough to open the shop without the password.
     cy.clearCookies();
-    cy.setCookie('session-username', 'someone_who_never_logged_in');
+    cy.setCookie('session-username', 'standard_user');
     cy.visit('/inventory.html');
     cy.url().should('include', '/inventory.html'); // passes while the defect exists
     cy.dt('inventory-item').should('have.length', 6);
