@@ -38,7 +38,15 @@ describe('problem_user (known defects)', () => {
 });
 
 describe('error_user (known defects)', () => {
-  beforeEach(() => { cy.login('error'); InventoryPage.open(); });
+  // This user's faults are JavaScript errors thrown by the site on purpose. Cypress fails a test on any error thrown by the
+  // application, so each test collects them instead: the errors are part of the evidence for the defect.
+  let appErrors;
+  beforeEach(() => {
+    appErrors = [];
+    cy.on('uncaught:exception', (err) => { appErrors.push(err.message); return false; });
+    cy.login('error');
+    InventoryPage.open();
+  });
 
   it('[TC-029][BUG-008] known defect: sorting raises a "Sorting is broken" alert', () => {
     const alert = cy.stub().as('alert');
@@ -50,6 +58,7 @@ describe('error_user (known defects)', () => {
   it('[TC-037][BUG-009] known defect: Add to cart does nothing for the Bolt T-Shirt', () => {
     cy.dt('add-to-cart-sauce-labs-bolt-t-shirt').click();
     InventoryPage.badge().should('not.exist');
+    cy.then(() => expect(appErrors.join(' | '), 'errors thrown by the site').to.contain('Failed to add item to the cart'));
   });
 
   it('[TC-047][BUG-010] known defect: Finish does nothing, so no order is placed', () => {
@@ -59,6 +68,7 @@ describe('error_user (known defects)', () => {
     cy.wait(1500);
     cy.url().should('include', 'checkout-step-two');
     cy.dt('complete-header').should('not.exist');
+    cy.then(() => expect(appErrors.length, 'errors thrown by the site').to.be.greaterThan(0));
   });
 });
 
