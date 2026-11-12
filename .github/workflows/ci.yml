@@ -68,9 +68,9 @@ jobs:
           mkdir -p site/report
           cp .github/pages/index.html site/index.html
           # The artifact layout depends on whether a screenshots folder exists, so find the report instead of assuming its path.
-          report=$(find artifact -path '*html/index.html' | head -n 1)
-          test -n "$report" || { echo "report not found"; exit 1; }
-          cp -r "$(dirname "$report")/." site/report/
+          report=$(find artifact -name index.html -not -path '*/.jsons/*' | head -n 1)
+          test -n "$report" || { echo "report not found"; find artifact | head -n 30; exit 1; }
+          cp "$report" site/report/index.html
       - uses: actions/configure-pages@v6
       - uses: actions/upload-pages-artifact@v5
         with:
