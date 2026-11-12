@@ -44,3 +44,36 @@ jobs:
             cypress/reports
             cypress/screenshots
           if-no-files-found: ignore
+
+  # Publishes the report as a small website: https://jahidulislamrihan26.github.io/cypress-e2e-saucedemo/
+  pages:
+    needs: cypress
+    if: github.ref == 'refs/heads/main' && github.event_name != 'pull_request'
+    runs-on: ubuntu-24.04
+    permissions:
+      contents: read
+      pages: write
+      id-token: write
+    environment:
+      name: github-pages
+      url: ${{ steps.deploy.outputs.page_url }}
+    steps:
+      - uses: actions/checkout@v7
+      - uses: actions/download-artifact@v8
+        with:
+          name: cypress-report
+          path: artifact
+      - name: Assemble the site
+        run: |
+          mkdir -p site/report
+          cp .github/pages/index.html site/index.html
+          # The artifact layout depends on whether a screenshots folder exists, so find the report instead of assuming its path.
+          report=$(find artifact -path '*html/index.html' | head -n 1)
+          test -n "$report" || { echo "report not found"; exit 1; }
+          cp -r "$(dirname "$report")/." site/report/
+      - uses: actions/configure-pages@v6
+      - uses: actions/upload-pages-artifact@v5
+        with:
+          path: site
+      - id: deploy
+        uses: actions/deploy-pages@v5
