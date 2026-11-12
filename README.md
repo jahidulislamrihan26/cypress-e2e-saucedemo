@@ -1,12 +1,13 @@
 # Cypress End-to-End Tests: SauceDemo
 
-[![CI](https://github.com/jahidulislamrihan26/cypress-e2e-saucedemo/actions/workflows/ci.yml/badge.svg)](https://github.com/jahidulislamrihan26/cypress-e2e-saucedemo/actions/workflows/ci.yml) Part of the [SQA portfolio](https://github.com/jahidulislamrihan26/sqa-portfolio).
+[![CI](https://github.com/jahidulislamrihan26/cypress-e2e-saucedemo/actions/workflows/ci.yml/badge.svg)](https://github.com/jahidulislamrihan26/cypress-e2e-saucedemo/actions/workflows/ci.yml) Part of the [SQA portfolio](https://github.com/jahidulislamrihan26/sqa-portfolio). [Live report](https://jahidulislamrihan26.github.io/cypress-e2e-saucedemo/).
 
 A **Cypress** suite for the public [SauceDemo](https://www.saucedemo.com) web shop, linked test by test to a manual test suite. It tests the same site as the [Playwright](https://github.com/jahidulislamrihan26/playwright-ui-automation-pom) and [Selenium](https://github.com/jahidulislamrihan26/selenium-pytest-saucedemo) projects, so the three tools can be compared on one application.
 
 ## Result in one look
 | | |
 |---|---|
+| Live report | **[open it](https://jahidulislamrihan26.github.io/cypress-e2e-saucedemo/)** (also saved as a build artifact of every run) |
 | Tests | **94**, all passing in CI in about one minute, with no retries needed |
 | Manual cases automated | **74 of 87 (85%)**, each test titled with its manual case id; the [traceability table](docs/traceability.md) is generated and checked in CI |
 | Known defects captured | **18 of 20** logged site defects, including the login bypass with a forged cookie, the missing security headers and the deliberately faulty test users |
