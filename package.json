@@ -18,6 +18,9 @@
     "open": "cypress open"
   },
   "devDependencies": {
-    "cypress": "^13.17.0"
+    "axe-core": "^4.14.0",
+    "cypress": "^13.17.0",
+    "cypress-axe": "^1.7.0",
+    "cypress-mochawesome-reporter": "^5.0.0"
   }
 }

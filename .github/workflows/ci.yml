@@ -27,14 +27,50 @@ jobs:
       - run: npm ci
       - name: Dependency audit (fails on critical or worse)
         run: npm audit --audit-level=critical
+      - name: Every relative link in the documents works
+        run: node tools/check-links.js
+      - name: The traceability table is up to date
+        run: |
+          node tools/trace.js
+          git diff --exit-code docs/traceability.md
       - run: npx cypress install
       - name: Cypress end-to-end tests
         run: npx cypress run
       - uses: actions/upload-artifact@v7
         if: always()
         with:
-          name: cypress-results
+          name: cypress-report
           path: |
-            cypress/results
+            cypress/reports
             cypress/screenshots
           if-no-files-found: ignore
+
+  # Publishes the report as a small website: https://jahidulislamrihan26.github.io/cypress-e2e-saucedemo/
+  pages:
+    needs: cypress
+    if: github.ref == 'refs/heads/main' && github.event_name != 'pull_request'
+    runs-on: ubuntu-24.04
+    permissions:
+      contents: read
+      pages: write
+      id-token: write
+    environment:
+      name: github-pages
+      url: ${{ steps.deploy.outputs.page_url }}
+    steps:
+      - uses: actions/checkout@v7
+      - uses: actions/download-artifact@v8
+        with:
+          name: cypress-report
+          path: artifact
+      - name: Assemble the site
+        run: |
+          mkdir -p site/report
+          cp .github/pages/index.html site/index.html
+          cp -r artifact/cypress/reports/html/. site/report/
+      - uses: actions/configure-pages@v6
+      - uses: actions/upload-pages-artifact@v5
+        with:
+          path: site
+      - id: deploy
+        uses: actions/deploy-pages@v5
